@@ -55,7 +55,7 @@ In this lesson, we'll explore different hosting options and understand how to de
 - Easiest but less control
 
 **Examples:**
-- Render, Heroku, Railway
+- Railway, Render, Heroku
 
 **Best for:**
 - Small to medium applications
@@ -102,12 +102,12 @@ In this lesson, we'll explore different hosting options and understand how to de
 
 **Option 1: All-in-One Platform**
 - Host code AND database on same platform
-- Example: Render (app + PostgreSQL database)
+- Example: Railway (app + PostgreSQL database)
 - ✅ Simple, one platform to manage
 - ❌ Vendor lock-in
 
 **Option 2: Separate Platforms**
-- Host code on one platform (Render)
+- Host code on one platform (Railway)
 - Host database on another (AWS RDS, Supabase)
 - ✅ Best tool for each job
 - ❌ More complex to manage
@@ -118,7 +118,7 @@ In this lesson, we'll explore different hosting options and understand how to de
 - ✅ Full control over data
 - ❌ You manage backups, security, scaling
 
-**For this course:** We'll use all-in-one platforms (Render) for simplicity.
+**For this course:** We'll use all-in-one platforms (Railway) for simplicity.
 
 ---
 
@@ -130,8 +130,8 @@ Let's compare four popular hosting platforms for containerized applications:
 
 | Platform | Type | Best For | Free Tier | Database Included | Difficulty |
 |----------|------|----------|-----------|-------------------|------------|
-| **Render** | PaaS | Web apps, APIs | 750 hours/month | PostgreSQL (free) | Easy |
 | **Railway** | PaaS | Rapid prototyping | $5 credit/month | PostgreSQL (paid) | Easy |
+| **Render** | PaaS | Web apps, APIs | 750 hours/month | PostgreSQL (free) | Easy |
 | **Fly.io** | Container | Edge computing | 3 VMs free | PostgreSQL (paid) | Medium |
 | **Heroku** | PaaS | Legacy/established apps | None (paid only) | PostgreSQL (paid) | Easy |
 
@@ -139,7 +139,45 @@ Let's compare four popular hosting platforms for containerized applications:
 
 ### Detailed Comparison
 
-#### 1. Render (Recommended for This Course)
+#### 1. Railway (Recommended for This Course)
+
+**✅ Pros:**
+- Extremely easy to use - simplest deployment experience
+- Deploy from GitHub or Docker Hub with one click
+- Built-in database templates
+- Beautiful dashboard and real-time logs
+- Fast deployments (typically under 2 minutes)
+- $5 free credit every month
+- No cold starts (always-on)
+- Great for learning and prototyping
+
+**❌ Cons:**
+- $5 credit runs out after 5-10 days with app + database
+- Requires credit card even for free tier
+- More expensive than Render for long-term paid plans
+- Less generous free tier for production use
+
+**Free Tier Details:**
+- **Credit:** $5/month (resets monthly)
+- **Database:** Counts against $5 credit (~$1-2/month)
+- **App hosting:** Counts against $5 credit
+- **Note:** Perfect for learning and short-term projects
+
+**Best Use Cases:**
+- Student projects and learning (our use case!)
+- Quick prototypes
+- Hackathon projects
+- Short-term demos
+- Testing deployment workflows
+
+**Pricing:**
+- Pay-as-you-go after $5 credit
+- Typically $10-20/month for app + database
+- Pro plan: $20/month with additional features
+
+---
+
+#### 2. Render
 
 **✅ Pros:**
 - Generous free tier (750 hours/month for web services)
@@ -155,6 +193,7 @@ Let's compare four popular hosting platforms for containerized applications:
 - Cold starts take 30-60 seconds
 - Limited to 512MB RAM on free tier
 - Slower than paid tiers
+- Port configuration can be tricky for beginners
 
 **Free Tier Details:**
 - **Web Service:** 750 hours/month
@@ -163,46 +202,14 @@ Let's compare four popular hosting platforms for containerized applications:
 - **Builds:** Unlimited
 
 **Best Use Cases:**
-- Student projects and learning
+- Long-term student projects
 - Small web applications
 - APIs with moderate traffic
 - Apps that can tolerate cold starts
 
-**Pricing (if you upgrade):**
+**Pricing:**
 - Starter: $7/month (always-on, no cold starts)
 - Standard: $25/month (more resources)
-
----
-
-#### 2. Railway
-
-**✅ Pros:**
-- Very easy to use (similar to Heroku)
-- Deploy from GitHub with one click
-- Built-in database templates
-- Nice dashboard and logs
-- Fast deployments
-- $5 free credit every month
-
-**❌ Cons:**
-- $5 credit runs out quickly with database
-- Requires credit card even for free tier
-- More expensive than Render for paid plans
-- Less generous free tier
-
-**Free Tier Details:**
-- **Credit:** $5/month (resets monthly)
-- **Database:** Counts against $5 credit
-- **Note:** $5 lasts ~5-10 days with app + database
-
-**Best Use Cases:**
-- Quick prototypes
-- Hackathon projects
-- Short-term demos
-
-**Pricing:**
-- Pay-as-you-go after $5 credit
-- Typically $10-20/month for app + database
 
 ---
 
@@ -266,26 +273,26 @@ Let's compare four popular hosting platforms for containerized applications:
 - PostgreSQL: $5/month (mini plan)
 - Total: ~$12/month minimum
 
-**Many developers moved to Render when Heroku removed free tier!**
+**Many developers moved to Railway and Render when Heroku removed free tier!**
 
 ---
 
 ### Quick Comparison Table
 
-| Feature | Render | Railway | Fly.io | Heroku |
-|---------|--------|---------|--------|--------|
-| **Setup Time** | 10 minutes | 5 minutes | 15 minutes | 10 minutes |
-| **Free Database** | Yes (PostgreSQL) | No | No | No |
-| **Credit Card Required** | No | Yes | Yes | Yes |
-| **Cold Starts** | Yes (free tier) | No | No | N/A |
-| **Always-On (Free)** | No | Yes ($5 credit) | Yes | No free tier |
-| **Best For** | Learning, small apps | Prototypes | Production apps | Enterprise |
-| **Learning Curve** | Easy | Easy | Medium | Easy |
-| **Monthly Cost (Free)** | $0 | $0 (5-10 days) | $0 (no DB) | N/A |
+| Feature | Railway | Render | Fly.io | Heroku |
+|---------|---------|--------|--------|--------|
+| **Setup Time** | 2 minutes | 10 minutes | 15 minutes | 10 minutes |
+| **Free Database** | No (paid) | Yes (PostgreSQL) | No | No |
+| **Credit Card Required** | Yes | No | Yes | Yes |
+| **Cold Starts** | No | Yes (free tier) | No | N/A |
+| **Always-On (Free)** | Yes ($5 credit) | No | Yes | No free tier |
+| **Best For** | Learning, prototypes | Small apps | Production apps | Enterprise |
+| **Learning Curve** | Very Easy | Easy | Medium | Easy |
+| **Monthly Cost (Free)** | $0 (5-10 days) | $0 | $0 (no DB) | N/A |
 
 ---
 
-## Part 3 - Deploying to Render (Demo)
+## Part 3 - Deploying to Railway (Demo)
 
 **Note:** This is an **instructor-led demonstration**. You will observe the deployment process, not do it yourself today.
 
@@ -310,151 +317,263 @@ We'll use the same **hello-cicd-app** from Lesson 9:
 
 **What we already have from Lesson 9:**
 - ✅ Spring Boot app with `/hello` endpoint
-- ✅ Dockerfile (multi-stage build)
+- ✅ Dockerfile (multi-stage build with correct base images)
 - ✅ Docker image on Docker Hub: `username/hello-cicd-app:latest`
 
-**No changes needed!** We'll use the existing Docker image.
+**Important: Verify Dockerfile is correct**
+
+Your Dockerfile should look like this (with JDK, not JRE):
+
+```dockerfile
+# Build stage
+FROM eclipse-temurin:21-jdk-alpine AS build
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN apk add --no-cache maven
+RUN mvn clean package -DskipTests
+
+# Runtime stage - USE JDK (NOT JRE)
+FROM eclipse-temurin:21-jdk-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8080
+CMD ["java", "-jar", "app.jar"]
+```
+
+**Why JDK instead of JRE?**
+- JRE can cause compatibility issues on some platforms
+- JDK works reliably everywhere
+- Slightly larger image (~50MB) but guaranteed to work
 
 ---
 
-### Step 2: Create a Render Account
+### Step 2: Create a Railway Account
 
 **Instructor will demonstrate:**
 
-1. Go to [https://render.com](https://render.com)
-2. Click **"Get Started for Free"**
-3. Sign up with GitHub or Email
-4. No credit card required!
-5. Verify email address
+1. Go to [https://railway.app](https://railway.app)
+2. Click **"Login"** or **"Start a New Project"**
+3. Sign up with **GitHub** (recommended) - easiest authentication
+4. **Requires credit card** (but won't charge unless you exceed $5 credit)
+5. Verify email if prompted
 
 **Dashboard Overview:**
-- Services: Your deployed applications
-- Databases: PostgreSQL instances
-- Static Sites: For frontend apps
-- Environment Groups: Shared environment variables
+- Projects: Collections of related services
+- Services: Individual applications or databases
+- Clean, modern interface
+- Real-time deployment logs
 
 ---
 
 ### Step 3: Deploy from Docker Hub
 
-**Render supports multiple deployment methods:**
-- From GitHub/GitLab repository (with Dockerfile)
-- From Docker Hub (pre-built image)
+**Railway supports multiple deployment methods:**
+- From GitHub repository (with Dockerfile)
+- From Docker Hub (pre-built image) ← We'll use this
 - From Docker registry
+- From templates
 
 **We'll use Docker Hub method** (fastest for demo).
 
 **Instructor will demonstrate:**
 
-1. **Click "New +" → "Web Service"**
+**3.1: Start New Project**
 
-2. **Choose "Deploy an existing image from a registry"**
+1. Click **"Start a New Project"** (or "New Project")
+2. Select **"Deploy from Docker Image"**
 
-3. **Enter Docker image details:**
+**3.2: Enter Docker Image**
+
+3. In the dialog, enter:
    ```
-   Image URL: docker.io/username/hello-cicd-app:latest
+   sanjela/hello-cicd-app:latest
    ```
-   (Replace `username` with actual Docker Hub username)
+   (Replace `sanjela` with actual Docker Hub username)
 
-4. **Configure the service:**
-   - **Name:** `hello-cicd-demo`
-   - **Region:** Choose closest to you (e.g., Singapore, Frankfurt, Oregon)
-   - **Instance Type:** Free
-   - **Environment Variables:** None needed for this simple app
+4. Click **"Deploy"**
 
-5. **Advanced Settings:**
-   - **Port:** `8080` (Spring Boot default)
-   - **Health Check Path:** `/hello` (optional but recommended)
-
-6. **Click "Create Web Service"**
+**What happens now:**
+- Railway pulls the Docker image from Docker Hub
+- Starts the container
+- Deployment completes in ~30-60 seconds!
 
 ---
 
-### Step 4: Watch Deployment Progress
+### Step 4: Claim Project and Generate Domain
 
-**Render will now:**
-1. Pull the Docker image from Docker Hub
-2. Start the container
-3. Expose it on a public URL
-4. Assign SSL certificate (HTTPS)
+**4.1: Claim the Project**
 
-**Deployment takes 2-3 minutes.**
+After deployment starts, you'll see a warning:
+> "This is a temporary project and will be deleted in 24 hours"
 
-**You'll see logs:**
+1. Click **"Claim Project"** button (top right)
+2. Your project is now permanent (won't be deleted)
+
+**4.2: Generate Public Domain**
+
+To access your app from the internet:
+
+1. Click on the **hello-cicd-app** service (in the project view)
+2. Click **"Settings"** tab at the top
+3. Scroll down to **"Networking"** section
+4. Under **"Public Networking"**, click **"Generate Domain"**
+5. In the dialog:
+   - **Port:** Enter `8080` (Spring Boot default port)
+   - Click **"Generate Domain"** button
+
+Railway assigns a URL like:
 ```
-==> Pulling image from docker.io/username/hello-cicd-app:latest
+https://hello-cicd-app-production.up.railway.app
+```
+
+**Your app is now live!**
+
+---
+
+### Step 5: Watch Deployment Progress
+
+**Railway deployment is FAST:**
+
+**You'll see logs in real-time:**
+```
+==> Pulling image sanjela/hello-cicd-app:latest
 ==> Image pulled successfully
-==> Starting service
-==> Health check passed
-==> Your service is live 🎉
+==> Starting container...
+==> Container started
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::
+
+Started HelloCicdAppApplication in 2.962 seconds
+Tomcat started on port 8080
 ```
 
-**Render provides a URL:**
-```
-https://hello-cicd-demo.onrender.com
-```
+**Deployment complete!** Total time: ~1-2 minutes
 
 ---
 
-### Step 5: Test the Application
+### Step 6: Test the Application
 
 **Instructor will demonstrate:**
 
-1. **Open the Render URL in browser:**
+1. **Copy the Railway URL** (from Settings → Networking)
+2. **Add `/hello` to the URL:**
    ```
-   https://hello-cicd-demo.onrender.com/hello
+   https://hello-cicd-app-production.up.railway.app/hello
    ```
 
-2. **You should see:**
+3. **Open in browser or use curl:**
+   ```bash
+   curl https://hello-cicd-app-production.up.railway.app/hello
+   ```
+
+4. **You should see:**
    ```
    Hello from GitLab CI/CD Demo!
    ```
 
-3. **Success!** The application is now running on Render.
+**Success!** The application is now running on Railway. ✅
 
 ---
 
-### Step 6: Understanding Render Features
+### Step 7: Understanding Railway Features
 
-**Logs:**
-- Click "Logs" tab to see application output
-- Real-time logs (like `docker logs`)
-- Useful for debugging
+**Logs (Real-time):**
+- Click "Deployments" tab to see all deployments
+- Click any deployment to see logs
+- Beautiful, color-coded output
+- Real-time streaming (no refresh needed)
 
 **Metrics:**
 - CPU usage
 - Memory usage
-- Request count
-- Response times
+- Network traffic
+- All visible in dashboard
 
 **Settings:**
 - Environment variables
-- Auto-deploy on Docker Hub updates
-- Health checks
 - Custom domains
+- Volume (persistent storage)
+- Deploy triggers
 
-**Shell Access:**
-- Click "Shell" to access container
-- Run commands inside the running container
-- Useful for debugging
+**Variables:**
+- Add environment variables for database URLs, API keys, etc.
+- Easy key-value interface
+- Changes trigger redeployment
+
+**Deployments:**
+- See history of all deployments
+- Rollback to previous versions
+- View logs for each deployment
 
 ---
 
-### Step 7: Important Notes About Free Tier
+### Step 8: Important Notes About Railway
 
-**Cold Starts:**
-- Free tier services "sleep" after 15 minutes of inactivity
-- First request after sleep takes 30-60 seconds to wake up
-- Subsequent requests are fast
+**Always-On (No Cold Starts):**
+- Railway apps don't sleep
+- Fast response times even after inactivity
+- Great user experience
 
-**How to avoid cold starts?**
-- Upgrade to paid plan ($7/month)
-- Or: Keep app awake with a ping service (external)
+**$5 Monthly Credit:**
+- Free tier gives $5/month credit
+- Resets on the 1st of each month
+- With just this app: credit lasts ~10-15 days
+- With app + database: credit lasts ~5-7 days
+- **Perfect for learning and testing!**
 
-**Why does Render do this?**
-- Saves resources
-- Prevents abuse of free tier
-- Encourages users to upgrade for production apps
+**Usage Monitoring:**
+- Check usage in project settings
+- See how much credit remains
+- Estimate how long it will last
+
+**After Credit Runs Out:**
+- Services automatically pause
+- No charges to your card (unless you opt in)
+- Can restart next month when credit resets
+- Or add payment method for pay-as-you-go
+
+---
+
+### Step 9: Troubleshooting
+
+**Issue 1: "Deployment failed" or "Crashed"**
+
+**Cause:** Application not starting properly
+
+**Solution:**
+1. Click on deployment → View logs
+2. Look for errors in startup logs
+3. Common issues:
+   - Wrong port (Railway auto-detects from EXPOSE in Dockerfile)
+   - Missing dependencies
+   - Java version mismatch
+
+**Issue 2: Can't access app via URL**
+
+**Cause:** Domain not generated or wrong port configured
+
+**Solution:**
+1. Go to Settings → Networking
+2. Ensure "Public Networking" section shows a domain
+3. Verify port is set to `8080`
+4. Try regenerating domain if needed
+
+**Issue 3: "Image not found" error**
+
+**Cause:** Docker image name is incorrect or image doesn't exist on Docker Hub
+
+**Solution:**
+1. Verify image exists on Docker Hub (visit hub.docker.com)
+2. Check image name format: `username/image:tag`
+3. Ensure image is public (not private)
+4. Image URL format is just `username/image:latest` (no `docker.io/` prefix needed)
 
 ---
 
@@ -463,18 +582,20 @@ https://hello-cicd-demo.onrender.com
 ### Database Hosting Options
 
 **Option 1: Same Platform as Code**
-- Render provides free PostgreSQL database
+- Railway provides PostgreSQL, MySQL, MongoDB, Redis templates
 - Automatically connects to your app
 - ✅ Simple, one dashboard
-- ❌ Both sleep together on free tier
+- ✅ Fast internal networking
+- ❌ Counts against your $5 credit
 
 **Option 2: Specialized Database Services**
 - **Supabase:** Free PostgreSQL (500MB, always-on)
-- **ElephantSQL:** Free PostgreSQL (20MB, deprecated soon)
 - **PlanetScale:** Free MySQL (5GB)
 - **MongoDB Atlas:** Free MongoDB (512MB)
-- ✅ Database stays online even if app sleeps
+- ✅ Database stays online even if app pauses
+- ✅ Free tier doesn't expire quickly
 - ❌ Need to manage connection strings
+- ❌ External networking (slightly slower)
 
 **Option 3: Cloud Provider Databases**
 - **AWS RDS:** PostgreSQL, MySQL (no free tier)
@@ -485,52 +606,63 @@ https://hello-cicd-demo.onrender.com
 
 ---
 
-### Render Database Demo (Quick Overview)
+### Railway Database Demo (Quick Overview)
 
 **Instructor will demonstrate:**
 
-1. **Click "New +" → "PostgreSQL"**
+1. **In your project, click "New"**
+2. **Select "Database" → "Add PostgreSQL"**
 
-2. **Configure database:**
-   - **Name:** `hello-db`
-   - **Database:** `hellodb`
-   - **User:** `hello_user`
-   - **Region:** Same as your app
-   - **Plan:** Free
+Railway automatically:
+- Creates PostgreSQL database
+- Generates connection string
+- Makes it available as environment variables
+- Sets up internal networking
 
-3. **Click "Create Database"**
+**3. Database is ready immediately!**
 
-4. **Render provides connection details:**
-   ```
-   Internal Database URL: postgresql://hello_user:password@dpg-xxxxx/hellodb
-   External Database URL: postgresql://hello_user:password@oregon-postgres.render.com/hellodb
-   ```
+**Connection details** available as environment variables:
+```
+DATABASE_URL=postgresql://postgres:password@postgres.railway.internal:5432/railway
+PGHOST=postgres.railway.internal
+PGPORT=5432
+PGUSER=postgres
+PGPASSWORD=<generated-password>
+PGDATABASE=railway
+```
 
-5. **Use Internal URL** if app is on same Render account (faster, no internet)
+**4. Use in your app:**
 
-**Note:** Free database expires after 90 days. You'll need to recreate it (or upgrade to paid).
+In Spring Boot `application.properties`:
+```properties
+spring.datasource.url=${DATABASE_URL}
+```
+
+Railway automatically injects these variables into your app!
+
+**Note:** Database costs ~$1-2/month from your $5 credit.
 
 ---
 
 ### Connecting App to Database
 
-**Add environment variable to your app:**
+**Railway makes this incredibly simple:**
 
-1. Go to your web service → "Environment"
-2. Add variable:
-   ```
-   Key: DATABASE_URL
-   Value: <Internal Database URL from database>
-   ```
-3. Save changes
-4. App auto-redeploys with new environment variable
+1. **Add database to same project**
+2. **Railway automatically injects environment variables**
+3. **App can immediately access database**
 
-**In Spring Boot application:**
+**No manual configuration needed!** Internal networking is automatic.
+
+**In application.properties:**
 ```properties
 spring.datasource.url=${DATABASE_URL}
+spring.jpa.hibernate.ddl-auto=update
 ```
 
-**We'll do this in future lessons with devops-demo project!**
+**That's it!** Railway handles the rest.
+
+**We'll do this in Lesson 12 with devops-demo project!**
 
 ---
 
@@ -556,7 +688,7 @@ You will receive 4 hosting scenario cards. For each scenario:
 - Learning project (not production)
 - Budget: $0
 - Need both app and database
-- Okay with cold starts
+- Okay with occasional downtime
 - Want to learn deployment
 
 **Question:** Which platform should you use?
@@ -564,15 +696,17 @@ You will receive 4 hosting scenario cards. For each scenario:
 <details>
 <summary>Suggested Answer</summary>
 
-**Best Choice:** Render
+**Best Choice:** Railway
 
 **Reasons:**
-1. Free tier includes both app and PostgreSQL database
-2. No credit card required
-3. Easy to learn and use
-4. Perfect for student projects
-5. Cold starts acceptable for portfolio site
-6. Can upgrade later if project grows
+1. Extremely simple deployment - great for learning
+2. $5/month credit covers learning period (5-10 days)
+3. No cold starts - always responsive
+4. Beautiful dashboard for monitoring
+5. Easy database integration
+6. Can restart next month when credit resets
+
+**Alternative:** Render (if you need longer than 10 days on free tier)
 
 </details>
 
@@ -597,11 +731,11 @@ You will receive 4 hosting scenario cards. For each scenario:
 **Best Choice:** Railway
 
 **Reasons:**
-1. Fastest deployment (one-click from GitHub)
-2. $5/month credit is enough for 48 hours
+1. Fastest deployment - literally 2 minutes from Docker image
+2. $5/month credit perfect for 48 hours
 3. Easy to add Redis and PostgreSQL templates
-4. No cold starts with paid credit
-5. Clean dashboard to show judges
+4. No cold starts during demo
+5. Clean, impressive dashboard to show judges
 6. Can delete after hackathon
 
 </details>
@@ -629,10 +763,12 @@ You will receive 4 hosting scenario cards. For each scenario:
 **Reasons:**
 1. Edge computing = fast globally
 2. Can deploy to multiple regions
-3. No cold starts even on free tier
+3. No cold starts
 4. $20-30/month budget covers app + database
 5. Better performance for viral traffic
 6. Scales well as users grow
+
+**Why not Railway:** Railway is US-only, not ideal for global users
 
 </details>
 
@@ -655,17 +791,17 @@ You will receive 4 hosting scenario cards. For each scenario:
 <details>
 <summary>Suggested Answer</summary>
 
-**Best Choice:** Heroku or AWS (IaaS)
+**Best Choice:** AWS (IaaS) or Heroku
 
 **Reasons:**
-1. Budget allows paid solutions
-2. Heroku: Reliable, mature, many add-ons
-3. AWS: Full control for security/compliance
+1. Budget allows enterprise solutions
+2. AWS: Full control for security/compliance
+3. Heroku: Reliable, mature, many add-ons
 4. Free tiers not suitable for 500 users
 5. Need production-grade reliability
 6. Company can afford best solution
 
-**Alternative:** Could also use Render paid tier ($25-50/month) if simpler needs.
+**Why not Railway/Render:** Not designed for enterprise-scale applications with strict compliance needs
 
 </details>
 
@@ -695,8 +831,8 @@ You will receive 4 hosting scenario cards. For each scenario:
 
 **4. Resource Limits:**
 - Understand platform limits (RAM, CPU)
-- Optimize app to fit free tier
 - Monitor usage in dashboard
+- Optimize app if needed
 
 **5. Database Migrations:**
 - Plan how to run migrations
@@ -710,17 +846,17 @@ You will receive 4 hosting scenario cards. For each scenario:
 **Issue 1: App doesn't start**
 - Check logs for errors
 - Verify environment variables are set
-- Ensure port is correct (Render uses `PORT` env variable)
+- Ensure port is correct (Railway auto-detects from Dockerfile EXPOSE)
 
 **Issue 2: Database connection fails**
 - Verify DATABASE_URL is correct
-- Check firewall rules
-- Ensure database is in same region
+- Check that database and app are in same project
+- Ensure database is running
 
-**Issue 3: Slow response times**
-- Cold starts on free tier (expected)
-- Upgrade to paid tier
-- Or: Optimize code
+**Issue 3: Image keeps rebuilding**
+- Railway caches Docker images
+- Force rebuild if needed in settings
+- Check Docker Hub for updated image
 
 **Issue 4: App runs locally but not on platform**
 - Check Java/Node version compatibility
@@ -734,33 +870,34 @@ You will receive 4 hosting scenario cards. For each scenario:
 ### What You Learned
 
 1. ✅ Different types of hosting (PaaS, IaaS, Container)
-2. ✅ Comparison of Render, Railway, Fly.io, and Heroku
-3. ✅ How to deploy a Docker image to Render
+2. ✅ Comparison of Railway, Render, Fly.io, and Heroku
+3. ✅ How to deploy a Docker image to Railway (hands-on demo)
 4. ✅ Database hosting options
 5. ✅ When to use which platform based on requirements
 
 ### Key Takeaways
 
 **1. Choose platforms based on needs:**
-- Learning/Student projects → Render (free)
-- Quick prototypes → Railway ($5 credit)
-- Production apps → Fly.io or Heroku
-- Enterprise → AWS/Azure/Google Cloud
+- Learning/Quick prototypes → Railway (easiest, fastest)
+- Long-term student projects → Render (longer free tier)
+- Production apps → Fly.io (global performance)
+- Enterprise → AWS/Azure/Google Cloud (full control)
 
 **2. Free tiers have trade-offs:**
-- Cold starts
-- Limited resources
-- Time/credit limits
-- Good for learning, not production
+- Railway: $5 credit (5-10 days), no cold starts
+- Render: Longer duration but cold starts
+- Fly.io: Always-on but no database included
+- Choose based on your priorities
 
 **3. Start simple, scale later:**
-- Begin with all-in-one platforms (Render)
+- Begin with all-in-one platforms (Railway)
 - Move to specialized services as you grow
 - Don't over-engineer early
 
 **4. Manual deployment teaches concepts:**
 - In Lesson 12, we'll automate this with CI/CD
 - Understanding manual process helps debug automation
+- Railway's simplicity makes learning easier
 
 ---
 
@@ -771,12 +908,12 @@ You will receive 4 hosting scenario cards. For each scenario:
 - Deploy the full **devops-demo project** (with database)
 - Set up automatic deployments on code push
 - Use Docker Compose for local development
-- Deploy to Render with PostgreSQL
+- Deploy to Railway with PostgreSQL
 
 **For now:**
-- Explore Render dashboard on your own
+- Explore Railway dashboard on your own
 - Try creating a free account
-- Read Render documentation
+- Read Railway documentation
 - Think about your own projects
 
 ---
@@ -784,10 +921,10 @@ You will receive 4 hosting scenario cards. For each scenario:
 ## Additional Resources
 
 ### Platform Documentation
-- [Render Docs](https://render.com/docs)
-- [Railway Docs](https://docs.railway.app/)
-- [Fly.io Docs](https://fly.io/docs/)
-- [Heroku Docs](https://devcenter.heroku.com/)
+- [Railway Docs](https://docs.railway.app/) - Complete documentation
+- [Render Docs](https://render.com/docs) - Alternative platform
+- [Fly.io Docs](https://fly.io/docs/) - Advanced deployment
+- [Heroku Docs](https://devcenter.heroku.com/) - Historical reference
 
 ### Database Services
 - [Supabase](https://supabase.com/) - Free PostgreSQL
@@ -796,11 +933,13 @@ You will receive 4 hosting scenario cards. For each scenario:
 
 ### Comparison Articles
 - [Heroku Alternatives 2024](https://dev.to/render/heroku-alternatives-in-2024-2g5a)
-- [Render vs Railway vs Fly.io](https://www.reddit.com/r/webdev/comments/10k5gxz/render_vs_railway_vs_flyio/)
+- [Railway vs Render vs Fly.io](https://www.reddit.com/r/webdev/comments/10k5gxz/render_vs_railway_vs_flyio/)
+- [Best PaaS for Students](https://dev.to/search?q=best%20paas%20for%20students)
 
 ### Video Tutorials
-- [Deploy Spring Boot to Render](https://www.youtube.com/results?search_query=deploy+spring+boot+to+render)
+- [Deploy to Railway Tutorial](https://www.youtube.com/results?search_query=deploy+to+railway+tutorial)
 - [Docker Deployment Guide](https://www.youtube.com/results?search_query=docker+deployment+guide)
+- [Railway vs Render Comparison](https://www.youtube.com/results?search_query=railway+vs+render)
 
 ---
 
@@ -810,20 +949,22 @@ You will receive 4 hosting scenario cards. For each scenario:
 
 **IaaS (Infrastructure as a Service):** Cloud platform where you rent virtual machines and manage everything yourself
 
-**Cold Start:** Delay when a sleeping free-tier app wakes up on first request
+**Cold Start:** Delay when a sleeping free-tier app wakes up on first request (Railway doesn't have this!)
 
 **Health Check:** Endpoint that platforms ping to verify app is running (e.g., `/health`)
 
 **Environment Variable:** Configuration value stored outside code (e.g., database URL, API keys)
 
-**SSL Certificate:** Security certificate for HTTPS (Render provides free)
+**SSL Certificate:** Security certificate for HTTPS (automatically provided by Railway)
 
 **Region:** Geographic location where app runs (affects latency)
 
 **Edge Computing:** Running apps close to users globally for low latency
 
+**Internal Networking:** Private network connection between services in same project (faster, more secure)
+
 ---
 
 **End of Lesson 10**
 
-**Great job!** You now understand different hosting platforms and how to deploy applications manually. In Lesson 12, you'll automate this process with Continuous Deployment!
+**Great job!** You now understand different hosting platforms and how to deploy applications manually. Railway's simplicity made this much easier! In Lesson 12, you'll automate this process with Continuous Deployment!
