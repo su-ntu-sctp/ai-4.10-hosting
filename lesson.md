@@ -1,13 +1,24 @@
-# Lesson 10: Hosting Options - Manual Hosting
+# Lesson 4.10: Hosting Options - Manual Hosting
 
 ## Learning Objectives
 
 By the end of this lesson, you will be able to:
-1. Explore different hosting options for both codebase and database
-2. Compare and contrast different hosting platforms
-3. Understand when to use which hosting platform based on requirements
-4. Recognize the differences between PaaS, IaaS, and container hosting
+1. **Identify** different hosting options for both codebase and database
+2. **Compare** and contrast different hosting platforms
+3. **Select** the appropriate hosting platform based on project requirements
+4. **Distinguish** between PaaS, IaaS, and container hosting
 
+---
+
+## Prerequisites
+
+Before starting this lesson, you should have:
+- Completed Lesson 4.9 (CI/CD Tools)
+- Understanding of Docker and containerization
+- Familiarity with Docker Hub (pushing and pulling images)
+- Basic knowledge of CI/CD pipelines
+
+---
 
 ## Introduction
 
@@ -17,7 +28,7 @@ By the end of this lesson, you will be able to:
 - How do you choose the right hosting platform?
 - What about databases?
 
-In this lesson, we'll explore different hosting options and understand how to deploy applications manually before automating the process in Lesson 12.
+In this lesson, we'll explore different hosting options and understand how to deploy applications manually before automating the process in Lesson 4.12.
 
 ---
 
@@ -279,6 +290,18 @@ Let's compare four popular hosting platforms for containerized applications:
 
 ---
 
+### 🏃 Activity 1 — Platform Matching Discussion (10 min)
+
+Based on what you've just read, discuss the following with a partner:
+
+1. A solo developer wants to deploy a Spring Boot app over a weekend to show a client. They have no budget. Which platform would you recommend and why?
+2. A startup has 5,000 users across Asia and Europe and needs fast response times globally. Which platform makes the most sense?
+3. Looking at the comparison table — why do you think Heroku lost so many users when they removed their free tier in 2022?
+
+> **Key takeaway:** Free tiers are great for learning but always understand the limitations before committing to a platform.
+
+---
+
 ## Part 3 - Deploying to Railway (Demo)
 
 **Note:** This is an **instructor-led demonstration**. You will observe the deployment process, not do it yourself today.
@@ -286,13 +309,13 @@ Let's compare four popular hosting platforms for containerized applications:
 **Why observation-only?**
 - You haven't learned Continuous Deployment (CD) yet
 - Manual deployment is for understanding the process
-- In Lesson 12, you'll deploy properly using automated CI/CD pipelines
+- In Lesson 4.12, you'll deploy properly using automated CI/CD pipelines
 - Today's focus: Understanding hosting platform options and comparison
-- Lesson 12's focus: Hands-on automated deployment of your devops-demo project
+- Lesson 4.12's focus: Hands-on automated deployment of your devops-demo project
 
 ### Demo Application
 
-We'll use the same **hello-cicd-app** from Lesson 9:
+We'll use the same **hello-cicd-app** from Lesson 4.9:
 - Simple Spring Boot application
 - One `/hello` endpoint
 - Already containerized (Dockerfile exists)
@@ -302,7 +325,7 @@ We'll use the same **hello-cicd-app** from Lesson 9:
 
 ### Step 1: Prepare the Application
 
-**What we already have from Lesson 9:**
+**What we already have from Lesson 4.9:**
 - ✅ Spring Boot app with `/hello` endpoint
 - ✅ Dockerfile (multi-stage build with correct base images)
 - ✅ Docker image on Docker Hub: `username/hello-cicd-app:latest`
@@ -649,13 +672,12 @@ spring.jpa.hibernate.ddl-auto=update
 
 **That's it!** Railway handles the rest.
 
-**We'll do this in Lesson 12 with devops-demo project!**
+**We'll do this in Lesson 4.12 with devops-demo project!**
 
 ---
 
 ## Part 5 - Hands-On Activity: Platform Selection
 
-**Time:** 15 minutes  
 **Format:** Small groups (3-4 students)
 
 ### Instructions
@@ -669,8 +691,8 @@ You will receive 4 hosting scenario cards. For each scenario:
 
 ### Scenario 1: Student Portfolio Project
 
-**Project:** Personal portfolio website with blog  
-**Tech Stack:** React frontend, Spring Boot backend, PostgreSQL  
+**Project:** Personal portfolio website with blog
+**Tech Stack:** React frontend, Spring Boot backend, PostgreSQL
 **Requirements:**
 - Learning project (not production)
 - Budget: $0
@@ -701,8 +723,8 @@ You will receive 4 hosting scenario cards. For each scenario:
 
 ### Scenario 2: Weekend Hackathon
 
-**Project:** AI chatbot for event  
-**Tech Stack:** Python backend, Redis cache, PostgreSQL  
+**Project:** AI chatbot for event
+**Tech Stack:** Python backend, Redis cache, PostgreSQL
 **Requirements:**
 - Need to deploy in 2 days
 - Show to judges (one weekend)
@@ -731,8 +753,8 @@ You will receive 4 hosting scenario cards. For each scenario:
 
 ### Scenario 3: Side Project Going Viral
 
-**Project:** URL shortener app  
-**Tech Stack:** Node.js backend, Redis, PostgreSQL  
+**Project:** URL shortener app
+**Tech Stack:** Node.js backend, Redis, PostgreSQL
 **Requirements:**
 - Started as hobby, now has 10,000 users
 - Users in USA, Europe, Asia
@@ -763,8 +785,8 @@ You will receive 4 hosting scenario cards. For each scenario:
 
 ### Scenario 4: Corporate Application
 
-**Project:** Internal employee management system  
-**Tech Stack:** Java Spring Boot, PostgreSQL, Redis  
+**Project:** Internal employee management system
+**Tech Stack:** Java Spring Boot, PostgreSQL, Redis
 **Requirements:**
 - 500 employees using daily
 - Must be reliable (no downtime)
@@ -849,6 +871,3 @@ You will receive 4 hosting scenario cards. For each scenario:
 - Check Java/Node version compatibility
 - Verify all dependencies are in pom.xml/package.json
 - Review build logs for errors
-
----
-
