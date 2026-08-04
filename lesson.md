@@ -128,9 +128,9 @@ Let's compare four popular hosting platforms for containerized applications:
 
 | Platform | Type | Best For | Free Tier | Database Included | Difficulty |
 |----------|------|----------|-----------|-------------------|------------|
-| **Railway** | PaaS | Rapid prototyping | $5 credit/month | PostgreSQL (paid) | Easy |
-| **Render** | PaaS | Web apps, APIs | 750 hours/month | PostgreSQL (free) | Easy |
-| **Fly.io** | Container | Edge computing | 3 VMs free | PostgreSQL (paid) | Medium |
+| **Railway** | PaaS | Rapid prototyping | $5 one-time trial credit (30 days), then $1 free credit/month ongoing | PostgreSQL (paid) | Easy |
+| **Render** | PaaS | Web apps, APIs | 750 hours/month | PostgreSQL (free, 30 days) | Easy |
+| **Fly.io** | Container | Edge computing | No free tier for new accounts (removed 2024) | PostgreSQL (paid) | Medium |
 | **Heroku** | PaaS | Legacy/established apps | None (paid only) | PostgreSQL (paid) | Easy |
 
 ---
@@ -145,21 +145,22 @@ Let's compare four popular hosting platforms for containerized applications:
 - Built-in database templates
 - Beautiful dashboard and real-time logs
 - Fast deployments (typically under 2 minutes)
-- $5 free credit every month
+- New accounts get a one-time $5 trial credit, no credit card required to start
 - No cold starts (always-on)
 - Great for learning and prototyping
 
 **❌ Cons:**
-- $5 credit runs out after 5-10 days with app + database
-- Requires credit card even for free tier
-- More expensive than Render for long-term paid plans
-- Less generous free tier for production use
+- The $5 trial credit is one-time (valid 30 days or until spent), not a recurring monthly amount
+- After the trial, the ongoing Free plan only includes $1 of credit per month
+- More expensive than Render if your project outgrows the Free plan's limits (1 replica, 0.5GB RAM)
+- Trial database/volume data is deleted 30 days after the trial credit expires unless you upgrade
 
 **Free Tier Details:**
-- **Credit:** $5/month (resets monthly)
-- **Database:** Counts against $5 credit (~$1-2/month)
-- **App hosting:** Counts against $5 credit
-- **Note:** Perfect for learning and short-term projects
+- **Trial (new accounts):** One-time $5 credit, valid for 30 days or until spent, whichever comes first. No credit card required to start.
+- **After the Trial:** Railway automatically moves your account to the ongoing **Free plan** — $0/month subscription with $1 of free credit per month (does not roll over)
+- **Database:** Counts against your Trial/Free plan credit
+- **App hosting:** Counts against your Trial/Free plan credit
+- **Note:** Great for learning — the Trial comfortably covers your first 1-2 weeks of experimentation, and the Free plan afterward keeps a small always-on app running at no ongoing cost, just with tighter resource limits (1 replica, 0.5GB RAM, 1 vCPU)
 
 **Best Use Cases:**
 - Student projects and learning (our use case!)
@@ -169,8 +170,9 @@ Let's compare four popular hosting platforms for containerized applications:
 - Testing deployment workflows
 
 **Pricing:**
-- Pay-as-you-go after $5 credit
-- Typically $10-20/month for app + database
+- Trial: Free (one-time $5 credit, 30 days)
+- Free plan (ongoing, automatic after trial): $0/month, $1 credit/month included
+- Hobby plan (optional upgrade for more resources): $5/month minimum subscription, includes $5 usage credit
 - Pro plan: $20/month with additional features
 
 ---
@@ -195,7 +197,7 @@ Let's compare four popular hosting platforms for containerized applications:
 
 **Free Tier Details:**
 - **Web Service:** 750 hours/month
-- **PostgreSQL:** 90 days free, then expires (need to recreate)
+- **PostgreSQL:** Free for 30 days, then a 14-day grace period before the database and its data are deleted (changed from 90 days in May 2024)
 - **Bandwidth:** 100GB/month
 - **Builds:** Unlimited
 
@@ -218,7 +220,6 @@ Let's compare four popular hosting platforms for containerized applications:
 - Fast performance globally
 - Good for microservices
 - Powerful CLI tool
-- Free tier includes 3 VMs
 - True always-on (no sleeping)
 
 **❌ Cons:**
@@ -227,8 +228,9 @@ Let's compare four popular hosting platforms for containerized applications:
 - Database costs extra ($2/month minimum)
 - Requires credit card
 - Less beginner-friendly
+- **Fly.io removed its free tier for new signups in 2024** — new accounts get only a short trial before billing starts; the free VMs described below now apply only to legacy accounts created before the change
 
-**Free Tier Details:**
+**Free Tier Details (legacy accounts only — see note above):**
 - **VMs:** Up to 3 shared-cpu-1x (256MB RAM each)
 - **Bandwidth:** 160GB outbound
 - **Storage:** 3GB persistent volume
@@ -278,15 +280,15 @@ Let's compare four popular hosting platforms for containerized applications:
 ### Quick Comparison Table
 
 | Feature | Railway | Render | Fly.io | Heroku |
-|---------|---------|--------|--------|--------|
+|---------|----------|--------------|---------|--------------|
 | **Setup Time** | 2 minutes | 10 minutes | 15 minutes | 10 minutes |
 | **Free Database** | No (paid) | Yes (PostgreSQL) | No | No |
-| **Credit Card Required** | Yes | No | Yes | Yes |
+| **Credit Card Required** | No | No | Yes | Yes |
 | **Cold Starts** | No | Yes (free tier) | No | N/A |
-| **Always-On (Free)** | Yes ($5 credit) | No | Yes | No free tier |
+| **Always-On (Free)** | Yes (Trial, then ongoing Free plan) | No | N/A (no free tier for new accounts) | No free tier |
 | **Best For** | Learning, prototypes | Small apps | Production apps | Enterprise |
 | **Learning Curve** | Very Easy | Easy | Medium | Easy |
-| **Monthly Cost (Free)** | $0 (5-10 days) | $0 | $0 (no DB) | N/A |
+| **Monthly Cost (Free)** | $0 (Trial 30 days, then $1 credit/mo ongoing) | $0 | N/A (no free tier for new signups) | N/A |
 
 ---
 
@@ -364,8 +366,8 @@ CMD ["java", "-jar", "app.jar"]
 
 1. Go to [https://railway.app](https://railway.app)
 2. Click **"Login"** or **"Start a New Project"**
-3. Sign up with **GitHub** (recommended) - easiest authentication
-4. **Requires credit card** (but won't charge unless you exceed $5 credit)
+3. Sign up with **GitHub** (recommended) - easiest authentication, and unlocks the "Full Trial" with unrestricted network access
+4. **No credit card required** to start the free Trial
 5. Verify email if prompted
 
 **Dashboard Overview:**
@@ -531,11 +533,12 @@ Tomcat started on port 8080
 - Fast response times even after inactivity
 - Great user experience
 
-**$5 Monthly Credit:**
-- Free tier gives $5/month credit
-- Resets on the 1st of each month
-- With just this app: credit lasts ~10-15 days
-- With app + database: credit lasts ~5-7 days
+**Trial Credit, Then Ongoing Free Plan:**
+- New accounts get a one-time $5 trial credit, valid for 30 days or until spent
+- No credit card required to start
+- With just this app: trial credit lasts ~10-15 days
+- With app + database: trial credit lasts ~5-7 days
+- After the trial ends, Railway automatically moves your account to the ongoing Free plan ($0/month, $1 credit/month included) — no action needed on your part
 - **Perfect for learning and testing!**
 
 **Usage Monitoring:**
@@ -543,11 +546,11 @@ Tomcat started on port 8080
 - See how much credit remains
 - Estimate how long it will last
 
-**After Credit Runs Out:**
-- Services automatically pause
-- No charges to your card (unless you opt in)
-- Can restart next month when credit resets
-- Or add payment method for pay-as-you-go
+**After Trial Credit Runs Out:**
+- Railway automatically moves your account to the ongoing Free plan — no manual restart needed
+- The Free plan includes $1 of credit per month (does not roll over), enough to keep a small always-on service running
+- Trial database/volume data is deleted 30 days after the trial credit expires, so upgrade or export your data if you want to keep it long-term
+- Add a payment method any time if you want more resources (Hobby plan, $5/month)
 
 ---
 
@@ -596,7 +599,7 @@ Tomcat started on port 8080
 - Automatically connects to your app
 - ✅ Simple, one dashboard
 - ✅ Fast internal networking
-- ❌ Counts against your $5 credit
+- ❌ Counts against your Trial/Free plan credit
 
 **Option 2: Specialized Database Services**
 - **Supabase:** Free PostgreSQL (500MB, always-on)
@@ -650,7 +653,7 @@ spring.datasource.url=${DATABASE_URL}
 
 Railway automatically injects these variables into your app!
 
-**Note:** Database costs ~$1-2/month from your $5 credit.
+**Note:** Database usage counts against your Trial/Free plan credit (~$1-2/month worth of usage).
 
 ---
 
@@ -709,13 +712,13 @@ You will receive 4 hosting scenario cards. For each scenario:
 
 **Reasons:**
 1. Extremely simple deployment - great for learning
-2. $5/month credit covers learning period (5-10 days)
+2. The one-time $5 trial credit covers the initial learning period (5-10 days), and the ongoing Free plan afterward keeps a small app running at no cost
 3. No cold starts - always responsive
 4. Beautiful dashboard for monitoring
 5. Easy database integration
-6. Can restart next month when credit resets
+6. Automatically continues on the Free plan after the trial - no manual restart needed
 
-**Alternative:** Render (if you need longer than 10 days on free tier)
+**Alternative:** Render (if you need a database that stays free for longer than 30 days without a grace-period upgrade)
 
 </details>
 
@@ -741,7 +744,7 @@ You will receive 4 hosting scenario cards. For each scenario:
 
 **Reasons:**
 1. Fastest deployment - literally 2 minutes from Docker image
-2. $5/month credit perfect for 48 hours
+2. The one-time $5 trial credit is more than enough for a 48-hour hackathon
 3. Easy to add Redis and PostgreSQL templates
 4. No cold starts during demo
 5. Clean, impressive dashboard to show judges
@@ -773,7 +776,7 @@ You will receive 4 hosting scenario cards. For each scenario:
 1. Edge computing = fast globally
 2. Can deploy to multiple regions
 3. No cold starts
-4. $20-30/month budget covers app + database
+4. $20-30/month budget covers app + database (note: Fly.io no longer offers a free tier for new accounts, so this budget goes entirely toward paid usage from day one)
 5. Better performance for viral traffic
 6. Scales well as users grow
 
