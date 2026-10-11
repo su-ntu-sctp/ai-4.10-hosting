@@ -7,6 +7,7 @@ By the end of this lesson, you will be able to:
 2. **Compare** and contrast different hosting platforms
 3. **Select** the appropriate hosting platform based on project requirements
 4. **Distinguish** between PaaS, IaaS, and container hosting
+5. **Deploy** a containerized application and a PostgreSQL database to Railway, starting from a Docker Hub image
 
 ---
 
@@ -17,6 +18,8 @@ Before starting this lesson, you should have:
 - Understanding of Docker and containerization
 - Familiarity with Docker Hub (pushing and pulling images)
 - Basic knowledge of CI/CD pipelines
+- Completed Lesson 4.6 (Docker Compose) - today you deploy that version of devops-demo with PostgreSQL
+- Docker running on your computer and a Docker Hub account
 
 ---
 
@@ -28,7 +31,7 @@ Before starting this lesson, you should have:
 - How do you choose the right hosting platform?
 - What about databases?
 
-In this lesson, we'll explore different hosting options and understand how to deploy applications manually before automating the process in Lesson 4.12.
+In this lesson, we'll explore different hosting options and you'll deploy your **devops-demo** application and a PostgreSQL database to Railway yourself, starting from a Docker Hub image. In Lesson 4.12, you'll deploy to Railway again - this time directly from GitHub - and automate the process.
 
 ---
 
@@ -304,289 +307,192 @@ Based on what you've just read, discuss the following with a partner:
 
 ---
 
-## Part 3 - Deploying to Railway (Demo)
+## Part 3 - Hands-On: Deploy devops-demo to Railway from Docker Hub
 
-**Note:** This is an **instructor-led demonstration**. You will observe the deployment process, not do it yourself today.
+In Parts 3 and 4, **you** will deploy your own **devops-demo** application to Railway from a Docker image on Docker Hub, then connect it to a PostgreSQL database hosted on Railway.
 
-**Why observation-only?**
-- You haven't learned Continuous Deployment (CD) yet
-- Manual deployment is for understanding the process
-- In Lesson 4.12, you'll deploy properly using automated CI/CD pipelines
-- Today's focus: Understanding hosting platform options and comparison
-- Lesson 4.12's focus: Hands-on automated deployment of your devops-demo project
+### Two Ways to Deploy to Railway
 
-### Demo Application
+Railway can deploy your app in two ways. You will practise both in this module:
 
-We'll use the same **hello-cicd-app** from Lesson 4.9:
-- Simple Spring Boot application
-- One `/hello` endpoint
-- Already containerized (Dockerfile exists)
-- Docker image on Docker Hub
+| | Deploy from Docker Hub (today, Lesson 4.10) | Deploy from GitHub (Lesson 4.12) |
+|---|---|---|
+| **What Railway uses** | A ready-made image on Docker Hub | Your source code and `Dockerfile` on GitHub |
+| **Who builds the image** | You (or a CI pipeline), before deploying | Railway builds it from your `Dockerfile` |
+| **How it updates** | Redeploy when a new image is pushed | Redeploys automatically on every push |
+
+> **Why both?** Your **module assignment** asks you to deploy to Railway, so it pays to know both ways. Today you deploy a pre-built image from Docker Hub. In **Lesson 4.12**, you will deploy to Railway again, but this time **directly from GitHub**.
+
+```
+Your computer                 Docker Hub                            Railway
+docker build + push  ───►  YOUR_USERNAME/devops-demo:4.6.3  ───►  devops-demo service  ───►  Public URL
+                                                                        │
+                                                                   PostgreSQL (Part 4)
+```
 
 ---
 
-### Step 1: Prepare the Application
+### Step 1: Build and Push the devops-demo Image
 
-**What we already have from Lesson 4.9:**
-- ✅ Spring Boot app with `/hello` endpoint
-- ✅ Dockerfile (multi-stage build with correct base images)
-- ✅ Docker image on Docker Hub: `username/hello-cicd-app:latest`
+We'll use the version of devops-demo from **Lesson 4.6 (Docker Compose)** - tag `v4.6.3`. This version:
+- Connects to **PostgreSQL** using environment variables (`SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`)
+- Has a **multi-stage Dockerfile** that builds the JAR inside Docker - no `mvn` needed on your computer
 
-**Important: Verify Dockerfile is correct**
+For Windows users, use the WSL terminal only. For macOS users, use your preferred terminal.
 
-Your Dockerfile should look like this (with JDK, not JRE):
+**1.1: Download the project**
 
-```dockerfile
-# Build stage
-FROM eclipse-temurin:21-jdk-alpine AS build
-WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN apk add --no-cache maven
-RUN mvn clean package -DskipTests
-
-# Runtime stage - USE JDK (NOT JRE)
-FROM eclipse-temurin:21-jdk-alpine
-WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
-EXPOSE 8080
-CMD ["java", "-jar", "app.jar"]
+```sh
+cd ~
+cd playground
+curl -L -O https://github.com/aie-devops/devops-demo/archive/refs/tags/v4.6.3.zip
+unzip v4.6.3.zip
+cd devops-demo-4.6.3
 ```
 
-**Why JDK instead of JRE?**
-- JRE can cause compatibility issues on some platforms
-- JDK works reliably everywhere
-- Slightly larger image (~50MB) but guaranteed to work
+**1.2: Build and push the image** (replace `YOUR_DOCKERHUB_USERNAME`)
+
+```sh
+docker login
+docker build --platform linux/amd64 -t YOUR_DOCKERHUB_USERNAME/devops-demo:4.6.3 .
+docker push YOUR_DOCKERHUB_USERNAME/devops-demo:4.6.3
+```
+
+The build takes a few minutes the first time while Maven downloads dependencies.
+
+> **Why `--platform linux/amd64`?** Railway runs on `linux/amd64` servers. If you build on an Apple Silicon Mac (M1/M2/M3/M4) without this flag, the image is built for ARM and will crash on Railway with `exec format error`. On Apple Silicon, this build is slower because Docker emulates `amd64`.
+
+> **Why the tag `4.6.3` and not `latest`?** Your `latest` tag holds the image your CI pipeline published in Lesson 4.7 / 4.9 (no database). Using a separate tag keeps the two images apart.
+
+**1.3: Check Docker Hub**
+
+1. Go to [https://hub.docker.com](https://hub.docker.com) and open your `devops-demo` repository
+2. Check that the `4.6.3` tag is there
+3. Check that the repository is **Public** (Railway can't pull private images without extra setup)
 
 ---
 
 ### Step 2: Create a Railway Account
 
-**Instructor will demonstrate:**
-
 1. Go to [https://railway.app](https://railway.app)
 2. Click **"Login"** or **"Start a New Project"**
-3. Sign up with **GitHub** (recommended) - easiest authentication, and unlocks the "Full Trial" with unrestricted network access
-4. **No credit card required** to start the free Trial
-5. Verify email if prompted
+3. Sign up with **GitHub** (recommended)
+4. Verify your email if prompted
 
 **Dashboard Overview:**
-- Projects: Collections of related services
-- Services: Individual applications or databases
-- Clean, modern interface
-- Real-time deployment logs
+- **Projects:** Collections of related services (your app and its database live in one project)
+- **Services:** Individual applications or databases
+- **Deployment logs:** Shown in real time
+
+> Keep this account - you will use it again in Lesson 4.12 and for your module assignment.
 
 ---
 
 ### Step 3: Deploy from Docker Hub
 
-**Railway supports multiple deployment methods:**
-- From GitHub repository (with Dockerfile)
-- From Docker Hub (pre-built image) ← We'll use this
-- From Docker registry
-- From templates
-
-**We'll use Docker Hub method** (fastest for demo).
-
-**Instructor will demonstrate:**
-
-**3.1: Start New Project**
+**3.1: Start a New Project**
 
 1. Click **"Start a New Project"** (or "New Project")
 2. Select **"Deploy from Docker Image"**
 
-**3.2: Enter Docker Image**
+**3.2: Enter Your Docker Image**
 
-3. In the dialog, enter:
+3. In the dialog, enter your image name:
    ```
-   sanjela/hello-cicd-app:latest
+   YOUR_DOCKERHUB_USERNAME/devops-demo:4.6.3
    ```
-   (Replace `sanjela` with actual Docker Hub username)
+   (No `docker.io/` prefix needed)
 
 4. Click **"Deploy"**
 
-**What happens now:**
-- Railway pulls the Docker image from Docker Hub
-- Starts the container
-- Deployment completes in ~30-60 seconds!
+Railway pulls your image from Docker Hub and starts the container.
 
 ---
 
-### Step 4: Claim Project and Generate Domain
+### Step 4: Claim the Project and Generate a Domain
 
 **4.1: Claim the Project**
 
-After deployment starts, you'll see a warning:
-> "This is a temporary project and will be deleted in 24 hours"
+If you see a warning that the project is temporary and will be deleted, click **"Claim Project"** (top right) to make it permanent.
 
-1. Click **"Claim Project"** button (top right)
-2. Your project is now permanent (won't be deleted)
+**4.2: Generate a Public Domain**
 
-**4.2: Generate Public Domain**
-
-To access your app from the internet:
-
-1. Click on the **hello-cicd-app** service (in the project view)
-2. Click **"Settings"** tab at the top
-3. Scroll down to **"Networking"** section
+1. Click the **devops-demo** service in the project view
+2. Click the **"Settings"** tab
+3. Scroll down to the **"Networking"** section
 4. Under **"Public Networking"**, click **"Generate Domain"**
 5. In the dialog:
    - **Port:** Enter `8080` (Spring Boot default port)
-   - Click **"Generate Domain"** button
+   - Click **"Generate Domain"**
 
 Railway assigns a URL like:
 ```
-https://hello-cicd-app-production.up.railway.app
+https://devops-demo-production.up.railway.app
 ```
-
-**Your app is now live!**
 
 ---
 
-### Step 5: Watch Deployment Progress
+### Step 5: Read the Deployment Logs - Expect a Crash!
 
-**Railway deployment is FAST:**
+Click the **"Deployments"** tab, then click the latest deployment to see its logs.
 
-**You'll see logs in real-time:**
+**This deployment will crash - and that's expected.** Look for an error like this in the logs:
+
 ```
-==> Pulling image sanjela/hello-cicd-app:latest
-==> Image pulled successfully
-==> Starting container...
-==> Container started
-
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::
-
-Started HelloCicdAppApplication in 2.962 seconds
-Tomcat started on port 8080
+Could not resolve placeholder 'SPRING_DATASOURCE_URL' in value "${SPRING_DATASOURCE_URL}"
 ```
 
-**Deployment complete!** Total time: ~1-2 minutes
+**Why?** This version of devops-demo needs a PostgreSQL database. In Lesson 4.6, Docker Compose gave the app its database settings through environment variables. On Railway, nothing has set `SPRING_DATASOURCE_URL` yet, so the app can't start.
+
+> **Reading the logs is the first step of every deployment fix.** You'll give the app a database in Part 4.
 
 ---
 
-### Step 6: Test the Application
+### Step 6: Explore Railway's Features
 
-**Instructor will demonstrate:**
-
-1. **Copy the Railway URL** (from Settings → Networking)
-2. **Add `/hello` to the URL:**
-   ```
-   https://hello-cicd-app-production.up.railway.app/hello
-   ```
-
-3. **Open in browser or use curl:**
-   ```bash
-   curl https://hello-cicd-app-production.up.railway.app/hello
-   ```
-
-4. **You should see:**
-   ```
-   Hello from GitLab CI/CD Demo!
-   ```
-
-**Success!** The application is now running on Railway. ✅
-
----
-
-### Step 7: Understanding Railway Features
-
-**Logs (Real-time):**
-- Click "Deployments" tab to see all deployments
-- Click any deployment to see logs
-- Beautiful, color-coded output
-- Real-time streaming (no refresh needed)
-
-**Metrics:**
-- CPU usage
-- Memory usage
-- Network traffic
-- All visible in dashboard
-
-**Settings:**
-- Environment variables
-- Custom domains
-- Volume (persistent storage)
-- Deploy triggers
-
-**Variables:**
-- Add environment variables for database URLs, API keys, etc.
-- Easy key-value interface
-- Changes trigger redeployment
+While your app waits for its database, explore your service:
 
 **Deployments:**
-- See history of all deployments
-- Rollback to previous versions
-- View logs for each deployment
+- History of every deployment, each with its own logs
+- Redeploy or roll back to a previous version
+
+**Variables:**
+- Environment variables for database URLs, API keys and other settings
+- Changing a variable triggers a new deployment (you'll use this in Part 4)
+
+**Metrics:**
+- CPU, memory and network usage
+
+**Settings:**
+- Source image, networking (domains), and deploy settings
 
 ---
 
-### Step 8: Important Notes About Railway
+### Step 7: Troubleshooting
 
-**Always-On (No Cold Starts):**
-- Railway apps don't sleep
-- Fast response times even after inactivity
-- Great user experience
+**Issue 1: `exec format error` in the logs**
 
-**Trial Credit, Then Ongoing Free Plan:**
-- New accounts get a one-time $5 trial credit, valid for 30 days or until spent
-- No credit card required to start
-- With just this app: trial credit lasts ~10-15 days
-- With app + database: trial credit lasts ~5-7 days
-- After the trial ends, Railway automatically moves your account to the ongoing Free plan ($0/month, $1 credit/month included) — no action needed on your part
-- **Perfect for learning and testing!**
+**Cause:** The image was built for ARM (Apple Silicon Mac) instead of `linux/amd64`
 
-**Usage Monitoring:**
-- Check usage in project settings
-- See how much credit remains
-- Estimate how long it will last
+**Solution:** Rebuild with `docker build --platform linux/amd64 ...`, push again (Step 1.2), then click **"Redeploy"** in Railway.
 
-**After Trial Credit Runs Out:**
-- Railway automatically moves your account to the ongoing Free plan — no manual restart needed
-- The Free plan includes $1 of credit per month (does not roll over), enough to keep a small always-on service running
-- Trial database/volume data is deleted 30 days after the trial credit expires, so upgrade or export your data if you want to keep it long-term
-- Add a payment method any time if you want more resources (Hobby plan, $5/month)
+**Issue 2: "Image not found" error**
 
----
-
-### Step 9: Troubleshooting
-
-**Issue 1: "Deployment failed" or "Crashed"**
-
-**Cause:** Application not starting properly
+**Cause:** The image name or tag is incorrect, or the image isn't on Docker Hub
 
 **Solution:**
-1. Click on deployment → View logs
-2. Look for errors in startup logs
-3. Common issues:
-   - Wrong port (Railway auto-detects from EXPOSE in Dockerfile)
-   - Missing dependencies
-   - Java version mismatch
+1. Check the image and the `4.6.3` tag exist on [Docker Hub](https://hub.docker.com)
+2. Check the name format: `username/devops-demo:4.6.3`
+3. Make sure the repository is **Public**
+4. Don't add a `docker.io/` prefix
 
-**Issue 2: Can't access app via URL**
+**Issue 3: Can't access the app via the URL**
 
-**Cause:** Domain not generated or wrong port configured
+**Cause:** The app isn't running yet, the domain isn't generated, or the port is wrong
 
 **Solution:**
-1. Go to Settings → Networking
-2. Ensure "Public Networking" section shows a domain
-3. Verify port is set to `8080`
-4. Try regenerating domain if needed
-
-**Issue 3: "Image not found" error**
-
-**Cause:** Docker image name is incorrect or image doesn't exist on Docker Hub
-
-**Solution:**
-1. Verify image exists on Docker Hub (visit hub.docker.com)
-2. Check image name format: `username/image:tag`
-3. Ensure image is public (not private)
-4. Image URL format is just `username/image:latest` (no `docker.io/` prefix needed)
+1. Until you finish Part 4, the app crashes - this is expected
+2. Go to **Settings → Networking** and check a domain exists with port `8080`
 
 ---
 
@@ -594,88 +500,165 @@ Tomcat started on port 8080
 
 ### Database Hosting Options
 
-**Option 1: Same Platform as Code**
-- Railway provides PostgreSQL, MySQL, MongoDB, Redis templates
-- Automatically connects to your app
-- ✅ Simple, one dashboard
-- ✅ Fast internal networking
-- ❌ Counts against your Trial/Free plan credit
+**Option 1: Same Platform as Your App**
+- Railway, Render and similar platforms can host PostgreSQL, MySQL, MongoDB and Redis next to your app
+- ✅ Simple - one dashboard, one project
+- ✅ Fast, private networking between app and database
 
 **Option 2: Specialized Database Services**
-- **Supabase:** Free PostgreSQL (500MB, always-on)
-- **PlanetScale:** Free MySQL (5GB)
-- **MongoDB Atlas:** Free MongoDB (512MB)
-- ✅ Database stays online even if app pauses
-- ✅ Free tier doesn't expire quickly
-- ❌ Need to manage connection strings
-- ❌ External networking (slightly slower)
+- Managed database providers, e.g. **Supabase** (PostgreSQL), **MongoDB Atlas** (MongoDB)
+- ✅ Database is managed separately from where the app runs
+- ❌ You manage connection strings across two providers
+- ❌ Traffic goes over the public internet (slightly slower)
 
 **Option 3: Cloud Provider Databases**
-- **AWS RDS:** PostgreSQL, MySQL (no free tier)
-- **Google Cloud SQL:** PostgreSQL, MySQL (no free tier)
-- **Azure Database:** PostgreSQL, MySQL (no free tier)
-- ✅ Production-grade, scalable
-- ❌ Expensive, complex
+- **AWS RDS**, **Google Cloud SQL**, **Azure Database** (PostgreSQL, MySQL)
+- ✅ Production-grade, highly scalable
+- ❌ More complex to set up and run
 
 ---
 
-### Railway Database Demo (Quick Overview)
+### Hands-On: Add PostgreSQL to Your Railway Project
 
-**Instructor will demonstrate:**
+You'll now give devops-demo the database it needs, in the **same Railway project**.
 
-1. **In your project, click "New"**
-2. **Select "Database" → "Add PostgreSQL"**
-
-Railway automatically:
-- Creates PostgreSQL database
-- Generates connection string
-- Makes it available as environment variables
-- Sets up internal networking
-
-**3. Database is ready immediately!**
-
-**Connection details** available as environment variables:
 ```
-DATABASE_URL=postgresql://postgres:password@postgres.railway.internal:5432/railway
-PGHOST=postgres.railway.internal
-PGPORT=5432
-PGUSER=postgres
-PGPASSWORD=<generated-password>
-PGDATABASE=railway
+Railway project
+┌──────────────────────────────────────────────────────────┐
+│                                                          │
+│   devops-demo  ───── private network ─────►  Postgres    │
+│   (Docker Hub image)                         (database)  │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+        ▲
+   Public URL (/hello)
 ```
-
-**4. Use in your app:**
-
-In Spring Boot `application.properties`:
-```properties
-spring.datasource.url=${DATABASE_URL}
-```
-
-Railway automatically injects these variables into your app!
-
-**Note:** Database usage counts against your Trial/Free plan credit (~$1-2/month worth of usage).
 
 ---
 
-### Connecting App to Database
+### Step 1: Add a PostgreSQL Database
 
-**Railway makes this incredibly simple:**
+1. In your project, click **"New"** (or **"+ Create"**)
+2. Select **"Database"** → **"Add PostgreSQL"**
 
-1. **Add database to same project**
-2. **Railway automatically injects environment variables**
-3. **App can immediately access database**
+Railway creates a new **Postgres** service in your project. It's ready in less than a minute.
 
-**No manual configuration needed!** Internal networking is automatic.
+---
 
-**In application.properties:**
-```properties
-spring.datasource.url=${DATABASE_URL}
-spring.jpa.hibernate.ddl-auto=update
+### Step 2: Look at the Database Variables
+
+1. Click the **Postgres** service
+2. Open the **"Variables"** tab
+
+Railway created the connection details as variables, including:
+
+| Variable | Example value |
+|---|---|
+| `PGHOST` | `postgres.railway.internal` |
+| `PGPORT` | `5432` |
+| `PGUSER` | `postgres` |
+| `PGPASSWORD` | `<generated-password>` |
+| `PGDATABASE` | `railway` |
+| `DATABASE_URL` | `postgresql://postgres:<password>@postgres.railway.internal:5432/railway` |
+
+> **Important:** `DATABASE_URL` is **not** in the format Spring Boot needs. Spring Boot needs a **JDBC URL** that starts with `jdbc:postgresql://` and has no username or password in it. So we build our own URL from the individual variables in the next step.
+
+---
+
+### Step 3: Connect devops-demo to the Database
+
+Give devops-demo the same three environment variables Docker Compose gave it in Lesson 4.6 - this time pointing at Railway's database.
+
+1. Click the **devops-demo** service
+2. Open the **"Variables"** tab
+3. Click **"New Variable"** and add each of these (copy them exactly):
+
+| Variable | Value |
+|---|---|
+| `SPRING_DATASOURCE_URL` | `jdbc:postgresql://${{Postgres.PGHOST}}:${{Postgres.PGPORT}}/${{Postgres.PGDATABASE}}` |
+| `SPRING_DATASOURCE_USERNAME` | `${{Postgres.PGUSER}}` |
+| `SPRING_DATASOURCE_PASSWORD` | `${{Postgres.PGPASSWORD}}` |
+
+**What is `${{Postgres.PGHOST}}`?** It's a **reference variable**. Railway replaces it with the value of `PGHOST` from the service called **Postgres**. If Railway rotates the password or you rename the database, your app picks up the new values automatically. No passwords are copied by hand.
+
+**Compare with Lesson 4.6:**
+
+| | Docker Compose (Lesson 4.6) | Railway (today) |
+|---|---|---|
+| Database host | `db` (service name) | `postgres.railway.internal` (private network) |
+| Where variables live | `environment:` in `compose.yaml` | **Variables** tab of the service |
+| Password | Written in `compose.yaml` | Generated by Railway and referenced |
+
+---
+
+### Step 4: Deploy and Check the Logs
+
+1. If Railway shows a banner with your pending changes, click **"Deploy"** (or **"Apply changes"**). Otherwise, the new variables trigger a deployment automatically.
+2. Open the **"Deployments"** tab and click the new deployment
+3. This time the logs should show the app connecting to the database and starting:
+
+```
+HikariPool-1 - Starting...
+HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@...
+HikariPool-1 - Start completed.
+Tomcat started on port 8080 (http) with context path '/'
+Started DevopsDemoApplication in 6.1 seconds
 ```
 
-**That's it!** Railway handles the rest.
+`HikariPool-1 - Start completed` means Spring Boot connected to your Railway PostgreSQL database. ✅
 
-**We'll do this in Lesson 4.12 with devops-demo project!**
+---
+
+### Step 5: Test Your Application
+
+1. Copy your Railway URL (from **Settings → Networking**)
+2. Add `/hello` to the end of it and open it in your browser, or use curl:
+   ```bash
+   curl https://YOUR-RAILWAY-URL.up.railway.app/hello
+   ```
+3. You should see:
+   ```
+   DevOps demo - now on Docker Hub!
+   ```
+
+**Success!** Your devops-demo app and its PostgreSQL database are both running on Railway. 🎉
+
+---
+
+### Step 6: Troubleshooting
+
+**Issue 1: `'url' must start with "jdbc"`**
+
+**Cause:** `SPRING_DATASOURCE_URL` is set to `DATABASE_URL` (or another `postgresql://...` URL)
+
+**Solution:** Use the JDBC URL from Step 3: `jdbc:postgresql://${{Postgres.PGHOST}}:${{Postgres.PGPORT}}/${{Postgres.PGDATABASE}}`
+
+**Issue 2: `UnknownHostException: postgres.railway.internal` or "Connection refused"**
+
+**Cause:** The app can't reach the database over the private network
+
+**Solution:**
+1. Check the app and the database are in the **same project** (and the same environment)
+2. Check the database service is called **Postgres** - the name in `${{Postgres.PGHOST}}` must match the service name exactly
+3. Check the Postgres service is running (green), then redeploy devops-demo
+
+**Issue 3: `password authentication failed for user "postgres"`**
+
+**Cause:** The username or password variable is wrong
+
+**Solution:** Check `SPRING_DATASOURCE_USERNAME` is `${{Postgres.PGUSER}}` and `SPRING_DATASOURCE_PASSWORD` is `${{Postgres.PGPASSWORD}}` - no extra spaces or quotes.
+
+**Issue 4: Still `Could not resolve placeholder 'SPRING_DATASOURCE_URL'`**
+
+**Cause:** The variables were added to the wrong service, or the changes weren't deployed
+
+**Solution:** Add the variables to the **devops-demo** service (not Postgres), then deploy the changes.
+
+---
+
+### Clean Up (Optional)
+
+Running services use your Railway usage allowance. Once you've finished testing, you can delete this project from **Project Settings → Danger → Delete Project**. In **Lesson 4.12**, you'll deploy devops-demo to Railway again - this time directly from GitHub.
 
 ---
 
@@ -861,7 +844,7 @@ You will receive 4 hosting scenario cards. For each scenario:
 - Ensure port is correct (Railway auto-detects from Dockerfile EXPOSE)
 
 **Issue 2: Database connection fails**
-- Verify DATABASE_URL is correct
+- Verify the JDBC URL (`SPRING_DATASOURCE_URL`) starts with `jdbc:postgresql://`
 - Check that database and app are in same project
 - Ensure database is running
 
